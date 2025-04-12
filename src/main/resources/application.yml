@@ -42,5 +42,5 @@ app:
 
 
 telegram:
-  bot-token: 7711236507:AAHZn-Ietq6X9gQuc27E1jPscKT-jLx7n20
-  chat-id: 1193020140
+  bot-token: ${TELEGRAM_BOT_TOKEN}
+  chat-id: ${TELEGRAM_CHAT_ID}

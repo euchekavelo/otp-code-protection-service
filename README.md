@@ -191,7 +191,7 @@ curl --location --request GET 'localhost:8080/users' \
 ### Удаление конкретного пользователя, исключая администратора, и его OTP-кодов
 Пример команды:
 ```bash
-curl --location --request DELETE 'localhost:8080/users/4' \
+curl --location --request DELETE 'localhost:8080/users/<идентификатор пользователя>' \
 --header 'Authorization: Bearer <значение токена доступа>'
 ```
 **Примечание**

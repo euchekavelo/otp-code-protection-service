@@ -119,8 +119,12 @@ public class OtpCodeServiceImpl implements OtpCodeService {
         long operationId = otpCodeRequestDto.getOperationId();
         User currentAuthUser = getAuthUser();
 
-        Optional<OtpCode> optionalOtpCode
-                = otpCodeRepository.findByValueAndOperationIdAndUser(otpCodeValue, operationId, currentAuthUser);
+        Optional<OtpCode> optionalOtpCode;
+        if (currentAuthUser.getRole().equals("ROLE_ADMIN")) {
+            optionalOtpCode = otpCodeRepository.findByValueAndOperationId(otpCodeValue, operationId);
+        } else {
+            optionalOtpCode = otpCodeRepository.findByValueAndOperationIdAndUser(otpCodeValue, operationId, currentAuthUser);
+        }
 
         if (optionalOtpCode.isEmpty()) {
             throw new OtpCodeNotFoundException("OTP-code for the specified data was not found.");

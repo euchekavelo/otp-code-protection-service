@@ -9,10 +9,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.RestClientException;
 import ru.promo_z.otpcodeprotectionservice.dto.response.ErrorResponseDto;
-import ru.promo_z.otpcodeprotectionservice.exception.ConfigurationOtpCodeException;
-import ru.promo_z.otpcodeprotectionservice.exception.OtpCodeConfigurationNotFoundException;
-import ru.promo_z.otpcodeprotectionservice.exception.RegistrationException;
-import ru.promo_z.otpcodeprotectionservice.exception.UserNotFoundException;
+import ru.promo_z.otpcodeprotectionservice.exception.*;
 
 import java.io.IOException;
 
@@ -26,7 +23,8 @@ public class ExceptionHandlerControllerAdvice {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(getErrorResponse(ex.getMessage()));
     }
 
-    @ExceptionHandler({RegistrationException.class, UnsupportedOperationException.class, ConfigurationOtpCodeException.class})
+    @ExceptionHandler({RegistrationException.class, UnsupportedOperationException.class, ConfigurationOtpCodeException.class,
+            OtpCodeValidationException.class})
     public ResponseEntity<ErrorResponseDto> handleExceptionForBadRequestHttpStatus(Exception ex) {
         log.error(ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(getErrorResponse(ex.getMessage()));

@@ -18,4 +18,6 @@ public interface OtpCodeRepository extends JpaRepository<OtpCode, Long> {
     Optional<OtpCode> findByValueAndOperationIdAndUser(int value, long operationId, User user);
 
     List<OtpCode> findAllByStatusAndExpiryDateBefore(Status status, LocalDateTime expiryDate);
+
+    Optional<OtpCode> findByValueAndOperationId(int value, long operationId);
 }

@@ -1,5 +1,6 @@
 package ru.promo_z.otpcodeprotectionservice.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.promo_z.otpcodeprotectionservice.dto.request.UserRequestDto;
@@ -15,6 +16,7 @@ import ru.promo_z.otpcodeprotectionservice.service.AuthService;
 
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class AuthServiceImpl implements AuthService {
 
@@ -43,16 +45,20 @@ public class AuthServiceImpl implements AuthService {
             }
         }
 
+        if (!(role.equals("ROLE_USER") || role.equals("ROLE_ADMIN"))) {
+            throw new RegistrationException("Only one of two roles is available for installation: ROLE_USER or ROLE_ADMIN.");
+        }
+
         User newUser = userMapper.userRequestDtoToUser(userRequestDto);
         User savedUser = userRepository.save(newUser);
 
+        log.info("Saved user: {}", savedUser);
         return userMapper.userToUserResponseDto(savedUser);
     }
 
     @Override
     public TokenResponseDto login(UserRequestDto userRequestDto) throws UserNotFoundException {
-        Optional<User> optionalUser = userRepository.findByLoginAndPassword(userRequestDto.getLogin(),
-                userRequestDto.getPassword());
+        Optional<User> optionalUser = userRepository.findByLogin(userRequestDto.getLogin());
 
         if (optionalUser.isEmpty() || !passwordEncoder.matches(userRequestDto.getPassword(),
                 optionalUser.get().getPassword())) {
@@ -60,6 +66,7 @@ public class AuthServiceImpl implements AuthService {
             throw new UserNotFoundException("The user with the specified data was not found.");
         }
 
+        log.info("Logged in user: {}", optionalUser.get().getLogin());
         return TokenResponseDto.builder()
                 .token(jwtUtil.generateTokenForUser(userRequestDto.getLogin()))
                 .build();

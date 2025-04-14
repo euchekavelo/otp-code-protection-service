@@ -23,10 +23,9 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private static final List<String> ALLOWED_USER_ROLE_URL_PATTERNS = List.of("/otp-codes/validation");
-    private static final List<String> ALLOWED_ADMIN_ROLE_URL_PATTERNS = List.of("/otp-codes/*", "/users", "/users/**");
-    private static final List<String> ALLOWED_URL_PATTERNS
-            = List.of("/error", "/swagger-ui/**", "/v3/api-docs/**", "/auth/registration", "/auth/login");
+    private static final List<String> ALLOWED_USER_ROLE_URL_PATTERNS = List.of("/otp-codes/validation", "/otp-codes");
+    private static final List<String> ALLOWED_ADMIN_ROLE_URL_PATTERNS = List.of("/otp-codes/**", "/users", "/users/**");
+    private static final List<String> ALLOWED_URL_PATTERNS = List.of("/error", "/auth/registration", "/auth/login");
 
 
     private final UserDetailsService userDetailsService;
@@ -70,8 +69,9 @@ public class SecurityConfig {
                         auth -> auth.requestMatchers(ALLOWED_URL_PATTERNS
                                         .toArray(String[]::new)).permitAll()
                                 .requestMatchers("/users/test").permitAll()
+                                .requestMatchers(ALLOWED_USER_ROLE_URL_PATTERNS.toArray(String[]::new))
+                                .hasAnyRole("USER", "ADMIN")
                                 .requestMatchers(ALLOWED_ADMIN_ROLE_URL_PATTERNS.toArray(String[]::new)).hasRole("ADMIN")
-                                .requestMatchers(ALLOWED_USER_ROLE_URL_PATTERNS.toArray(String[]::new)).hasRole("USER")
                                 .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)

@@ -17,7 +17,7 @@ import java.io.IOException;
 @ControllerAdvice
 public class ExceptionHandlerControllerAdvice {
 
-    @ExceptionHandler({UserNotFoundException.class, OtpCodeConfigurationNotFoundException.class})
+    @ExceptionHandler({UserNotFoundException.class, OtpCodeConfigurationNotFoundException.class, OtpCodeNotFoundException.class})
     public ResponseEntity<ErrorResponseDto> handleExceptionForNotFoundHttpStatus(Exception ex) {
         log.error(ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(getErrorResponse(ex.getMessage()));

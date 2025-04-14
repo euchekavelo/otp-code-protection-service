@@ -1,0 +1,11 @@
+2025-04-15 00:44:40 [http-nio-8080-exec-10] INFO  r.p.o.service.impl.SmsServiceImpl - SMS submitted for destination +1111111113 with OTP-code: OTP-code value to sms: 305438
+2025-04-15 00:48:11 [http-nio-8080-exec-3] INFO  r.p.o.service.impl.EmailServiceImpl - For email sent to test3@mail.ru with body OTP-code value to email: 132701
+2025-04-15 00:51:00 [http-nio-8080-exec-6] INFO  r.p.o.s.impl.TelegramServiceImpl - User with ID 2 sent OTP-code value to telegram: 129146
+2025-04-15 01:29:25 [http-nio-8080-exec-2] INFO  r.p.o.service.impl.SmsServiceImpl - SMS submitted for destination +1111111113 with OTP-code: OTP-code value to sms: 51178
+2025-04-15 01:44:50 [http-nio-8080-exec-3] INFO  r.p.o.service.impl.EmailServiceImpl - For email sent to test2@mail.ru with body OTP-code value to email: 22390
+2025-04-15 01:44:59 [http-nio-8080-exec-4] INFO  r.p.o.service.impl.EmailServiceImpl - For email sent to test2@mail.ru with body OTP-code value to email: 528609
+2025-04-15 01:45:30 [http-nio-8080-exec-5] INFO  r.p.o.service.impl.EmailServiceImpl - For email sent to test4@mail.ru with body OTP-code value to email: 208969
+2025-04-15 01:45:34 [http-nio-8080-exec-7] INFO  r.p.o.service.impl.EmailServiceImpl - For email sent to test4@mail.ru with body OTP-code value to email: 917115
+2025-04-15 01:48:50 [http-nio-8080-exec-2] INFO  r.p.o.service.impl.EmailServiceImpl - For email sent to test5@mail.ru with body OTP-code value to email: 234843
+2025-04-15 01:49:04 [http-nio-8080-exec-3] INFO  r.p.o.s.impl.TelegramServiceImpl - User with ID 4 sent OTP-code value to telegram: 561083
+2025-04-15 01:49:11 [http-nio-8080-exec-4] INFO  r.p.o.service.impl.SmsServiceImpl - SMS submitted for destination +1111111115 with OTP-code: OTP-code value to sms: 469860

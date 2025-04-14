@@ -1,3 +1,46 @@
 spring:
   application:
     name: otp-code-protection-service
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/otp_code_db}
+    username: ${DATABASE_USER:postgre_user}
+    password: ${DATABASE_PASSWORD:postgre_secret_password}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+  mail:
+    host: smtp.ethereal.email
+    port: 587
+    username: brayan44@ethereal.email
+    password: r3Pb5cCHWw6xqu5TT4
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+        debug: true
+
+
+app:
+  jwt:
+    secret: mephi
+    token-expiration-milliseconds: 1800000
+  otp-code:
+    update-interval:
+      cron: 0/5 * * * * ?
+
+
+smpp:
+  host: localhost
+  port: 2775
+  system_id: smppclient1
+  password: password
+  system_type: OTP
+  source_addr: OTPService
+
+
+telegram:
+  bot-token: ${TELEGRAM_BOT_TOKEN}
+  chat-id: ${TELEGRAM_CHAT_ID}

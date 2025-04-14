@@ -21,6 +21,9 @@ public class User {
     @Column(unique = true, nullable = false)
     private String password;
 
+    @Column(unique = true, nullable = false)
+    private String phoneNumber;
+
     private String role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)

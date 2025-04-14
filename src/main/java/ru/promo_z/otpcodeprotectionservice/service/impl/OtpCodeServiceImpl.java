@@ -23,10 +23,7 @@ import ru.promo_z.otpcodeprotectionservice.model.enums.Status;
 import ru.promo_z.otpcodeprotectionservice.repository.OtpCodeConfigurationRepository;
 import ru.promo_z.otpcodeprotectionservice.repository.OtpCodeRepository;
 import ru.promo_z.otpcodeprotectionservice.security.AuthUser;
-import ru.promo_z.otpcodeprotectionservice.service.AuthService;
-import ru.promo_z.otpcodeprotectionservice.service.EmailService;
-import ru.promo_z.otpcodeprotectionservice.service.OtpCodeService;
-import ru.promo_z.otpcodeprotectionservice.service.TelegramService;
+import ru.promo_z.otpcodeprotectionservice.service.*;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -44,17 +41,19 @@ public class OtpCodeServiceImpl implements OtpCodeService {
     private final TelegramService telegramService;
     private final EmailService emailService;
     private static final Random RANDOM = new Random();
+    private final SmsService smsService;
 
     @Autowired
     public OtpCodeServiceImpl(OtpCodeRepository otpCodeRepository, OtpCodeConfigurationRepository otpCodeConfigurationRepository,
                               OtpCodeConfigurationMapper otpCodeConfigurationMapper, TelegramService telegramService,
-                              EmailService emailService) {
+                              EmailService emailService, SmsService smsService) {
 
         this.otpCodeRepository = otpCodeRepository;
         this.otpCodeConfigurationRepository = otpCodeConfigurationRepository;
         this.otpCodeConfigurationMapper = otpCodeConfigurationMapper;
         this.telegramService = telegramService;
         this.emailService = emailService;
+        this.smsService = smsService;
     }
 
     @Transactional
@@ -72,6 +71,7 @@ public class OtpCodeServiceImpl implements OtpCodeService {
                 .otpCodeConfigRequestDtoToOtpCodeConfiguration(otpCodeConfigRequestDto);
         otpCodeConfigurationRepository.save(otpCodeConfiguration);
 
+        log.info("OTP-code configuration installed.");
         return ResponseDto.builder()
                 .message("The configuration has been successfully installed.")
                 .build();
@@ -86,6 +86,7 @@ public class OtpCodeServiceImpl implements OtpCodeService {
                 operationRequestDto.getOperationId());
 
         optionalOtpCode.ifPresent(otpCodeRepository::delete);
+        otpCodeRepository.flush();
         Optional<OtpCodeConfiguration> optionalOtpCodeConfiguration
                 = otpCodeConfigurationRepository.findFirstByOrderByIdDesc();
 
@@ -104,10 +105,9 @@ public class OtpCodeServiceImpl implements OtpCodeService {
         otpCode.setExpiryDate(LocalDateTime.now().plus(otpCodeConfiguration.getLifeTimeInMilliseconds(), ChronoUnit.MILLIS));
         otpCodeRepository.save(otpCode);
 
-        //Тут логика по отправки кодов
-        sendOtpCode(operationRequestDto.getSendType(), otpCodeValue);
-        //
+        sendOtpCode(operationRequestDto.getSendType(), otpCodeValue, currentAuthUser);
 
+        log.info("Generated OTP-code {}", otpCodeValue);
         return getResponseDto("The OTP-code for the specified operation has been generated and sent.");
     }
 
@@ -134,6 +134,7 @@ public class OtpCodeServiceImpl implements OtpCodeService {
         otpCode.setStatus(Status.USED);
         otpCodeRepository.save(otpCode);
 
+        log.info("Validated OTP-code {}", otpCodeValue);
         return getResponseDto("OTP-code validated successfully.");
     }
 
@@ -143,7 +144,9 @@ public class OtpCodeServiceImpl implements OtpCodeService {
     public void updateExpiredOtpCodes() {
         List<OtpCode> otpCodeList = otpCodeRepository.findAllByStatusAndExpiryDateBefore(Status.ACTIVE, LocalDateTime.now());
         otpCodeList.forEach(otpCode -> otpCode.setStatus(Status.EXPIRED));
-        otpCodeRepository.saveAll(otpCodeList);
+        List<OtpCode> updatedOtpCodes = otpCodeRepository.saveAll(otpCodeList);
+
+        log.info("Updated OTP-Codes for {} ", updatedOtpCodes.size());
     }
 
     private ResponseDto getResponseDto(String message) {
@@ -167,13 +170,19 @@ public class OtpCodeServiceImpl implements OtpCodeService {
         return authUser.getUser();
     }
 
-    private void sendOtpCode(SendType sendType, int otpCodeValue) {
+    private void sendOtpCode(SendType sendType, int otpCodeValue, User user) {
         switch (sendType) {
             case TELEGRAM:
-                telegramService.sendMessage("OTP-code value to telegram: " + otpCodeValue);
+                telegramService.sendMessage("User with ID " + user.getId() + " sent OTP-code value to telegram: "
+                        + otpCodeValue);
+                break;
+            case EMAIL:
+                emailService.sendEmail(user.getLogin(), "OTP-code value to email: ",
+                        "OTP-code value to email: " + otpCodeValue);
                 break;
             case SMS:
-                emailService.sendEmail();
+                smsService.sendCode(user.getPhoneNumber(), "OTP-code value to sms: " + otpCodeValue);
+                break;
             default:
                 log.error("Unsupported send type: {}", sendType);
         }

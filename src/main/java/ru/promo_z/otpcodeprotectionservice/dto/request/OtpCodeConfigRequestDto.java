@@ -6,6 +6,5 @@ import lombok.Data;
 public class OtpCodeConfigRequestDto {
 
     private long lifeTimeInMilliseconds;
-
     private int length;
 }

@@ -51,7 +51,8 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public TokenResponseDto login(UserRequestDto userRequestDto) throws UserNotFoundException {
-        Optional<User> optionalUser = userRepository.findByLogin(userRequestDto.getLogin());
+        Optional<User> optionalUser = userRepository.findByLoginAndPassword(userRequestDto.getLogin(),
+                userRequestDto.getPassword());
 
         if (optionalUser.isEmpty() || !passwordEncoder.matches(userRequestDto.getPassword(),
                 optionalUser.get().getPassword())) {

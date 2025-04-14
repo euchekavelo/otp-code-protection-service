@@ -1,5 +1,6 @@
 package ru.promo_z.otpcodeprotectionservice.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import ru.promo_z.otpcodeprotectionservice.service.UserService;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -28,6 +30,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponseDto> getAllUsersExcludingAdmin() {
+        log.info("getAllUsersExcludingAdmin");
         return userMapper.userListToUserResponseDtoList(userRepository.findAllByRoleNot("ROLE_ADMIN"));
     }
 
@@ -35,6 +38,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteAllUsersExcludingAdmin() {
         userRepository.deleteAllByRoleNot("ROLE_ADMIN");
+        log.info("deleteAllUsersExcludingAdmin");
     }
 
     @Transactional
@@ -49,6 +53,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException("The user with the specified ID was not found."));
 
         userRepository.delete(user);
+        log.info("Deleted user with the specified ID: {}", userId);
     }
 
     private User getAuthUser() {

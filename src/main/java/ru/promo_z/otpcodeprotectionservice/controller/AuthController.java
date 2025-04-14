@@ -28,6 +28,7 @@ public class AuthController {
     public ResponseEntity<UserResponseDto> register(@RequestBody UserRequestDto userRequestDto)
             throws RegistrationException {
 
+        log.info("Registering user: {}", userRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(userRequestDto));
     }
 
@@ -35,6 +36,7 @@ public class AuthController {
     public ResponseEntity<TokenResponseDto> login(@RequestBody UserRequestDto userRequestDto)
             throws UserNotFoundException {
 
+        log.info("Logging user: {}", userRequestDto);
         return ResponseEntity.ok(authService.login(userRequestDto));
     }
 }

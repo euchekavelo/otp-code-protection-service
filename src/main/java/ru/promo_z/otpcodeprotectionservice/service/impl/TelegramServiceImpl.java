@@ -29,7 +29,7 @@ public class TelegramServiceImpl implements TelegramService {
         String url = String.format("https://api.telegram.org/bot%s/sendMessage", botToken);
         String requestUrl = String.format("%s?chat_id=%s&text=%s", url, chatId, message);
 
-        String response = restTemplate.getForObject(requestUrl, String.class);
-        log.info("Response from Telegram: {}", response);
+        restTemplate.getForObject(requestUrl, String.class);
+        log.info(message);
     }
 }

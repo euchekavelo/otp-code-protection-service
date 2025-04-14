@@ -12,8 +12,8 @@ spring:
   mail:
     host: smtp.ethereal.email
     port: 587
-    username: dorothy.smitham@ethereal.email
-    password: AYkGPChG5NtYkMUvu6
+    username: brayan44@ethereal.email
+    password: r3Pb5cCHWw6xqu5TT4
     properties:
       mail:
         smtp:
@@ -29,16 +29,16 @@ app:
     token-expiration-milliseconds: 1800000
   otp-code:
     update-interval:
-      cron: 0 * * * * ?
+      cron: 0/5 * * * * ?
 
 
-#smpp:
-#  host: localhost
-#  port: 2775
-#  system_id: smppclient1
-#  password: password
-#  system_type: OTP
-#  source_addr: OTPService
+smpp:
+  host: localhost
+  port: 2775
+  system_id: smppclient1
+  password: password
+  system_type: OTP
+  source_addr: OTPService
 
 
 telegram:

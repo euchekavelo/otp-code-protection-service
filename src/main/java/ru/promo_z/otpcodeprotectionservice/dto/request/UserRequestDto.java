@@ -7,5 +7,6 @@ public class UserRequestDto {
 
     private String login;
     private String password;
+    private String phoneNumber;
     private String role;
 }
